@@ -5,6 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:substring_highlight/substring_highlight.dart';
 
 
 
@@ -43,6 +44,8 @@ class _ChantPageState extends State<ChantPage>  {
   bool status = false;
   int _value = 2;
   bool sound = false;
+  String _currentWord = "";
+
   selectedNav(label)
   {
     setState(() {
@@ -67,13 +70,26 @@ class _ChantPageState extends State<ChantPage>  {
 
 
 
+
+
+
   Future _speak() async{
     await flutterTts.setLanguage("hi-IN");
-    await flutterTts.setPitch(1.1);
+    await flutterTts.setSpeechRate(1.0);
+    await flutterTts.setPitch(0.6);
     await flutterTts.speak(_value == 2 ? 'Lorem ipsum is drived from the Latin "dolorem ipsum" roughly translated as pain itselforem'
         : _value == 1 ? 'लोरम इप्सम लैटिन "डोलोरेम इप्सम" से लिया गया है जिसका मोटे तौर पर अनुवाद खुद लोरेम के रूप में किया गया है'
         : _value == 3? 'Lorem ipsum est dérivé du latin "dolorem ipsum" traduit approximativement par douleur elle-même lorem'
         :null);
+
+
+
+    await flutterTts.setProgressHandler((String text, int startOffset, int endOffset, String word) {
+      setState(() {
+        _currentWord = word;
+        print(_currentWord);
+      });
+    });
     sound =false;
   }
 
@@ -373,7 +389,7 @@ class _ChantPageState extends State<ChantPage>  {
                   child: Container(
 
                     padding: EdgeInsets.symmetric(horizontal: 27, vertical: 3),
-                    child: SingleChildScrollView(child: MainPageFromNav(navSel,_value)),
+                    child: SingleChildScrollView(child: MainPageFromNav(navSel,_value,sound,_currentWord)),
                   ),
                   flex: 9,
                 )
@@ -394,9 +410,11 @@ class _ChantPageState extends State<ChantPage>  {
 class MainPageFromNav extends StatefulWidget {
   final label;
   final _value;
+  final _sound;
+  final _currentWord;
 
 
-  MainPageFromNav(this.label,this._value);
+  MainPageFromNav(this.label,this._value,this._sound,this._currentWord);
 
   @override
   _MainPageFromNavState createState() => _MainPageFromNavState();
@@ -404,6 +422,7 @@ class MainPageFromNav extends StatefulWidget {
 
 class _MainPageFromNavState extends State<MainPageFromNav> {
   double _sizeValue = 8.5;
+
 
 
   @override
@@ -434,36 +453,38 @@ class _MainPageFromNavState extends State<MainPageFromNav> {
                     SizedBox(height: 9.0,),
                     new Row(crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        new Flexible(
-                          child:  RichText(
-                            text: TextSpan(
-                                text: widget._value ==2?'Lorem ipsum is drived from the Latin "dolorem ipsum" roughly translated as pain itselforem'
-                                    :widget._value == 1?'लोरम इप्सम लैटिन "डोलोरेम इप्सम" से लिया गया है जिसका मोटे तौर पर अनुवाद खुद लोरेम के रूप में किया गया है'
-                                    : widget._value == 3? 'Lorem ipsum est dérivé du latin "dolorem ipsum" traduit approximativement par douleur elle-même lorem'
-                                    :null,
 
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 2* _sizeValue,
-
-                                ),
-                                children: <TextSpan>[
-
-
-
-                                  TextSpan(
-                                      text: widget._value ==2?' ipsum presents the sample font and orientation of writting on orem ipsum is derived from the Latin "dolorem ipsum" roughly translated as "pain itself." '
-                                          :widget._value == 1?'ओप्सम नमूना फ़ॉन्ट प्रस्तुत करता है और ओरेम इप्सम पर लेखन का उन्मुखीकरण लैटिन "डारलेम इप्सम" से लिया गया है जिसका मोटे तौर पर "दर्द ही" के रूप में अनुवाद किया गया है।'
-                                          : widget._value == 3? "ipsum présente l'exemple de police et l'orientation de l'écriture sur orem ipsum est dérivée du latin «dolorem ipsum», à peu près traduit par «douleur elle-même»."
-                                          :null,
-                                      style: TextStyle(color: Colors.black26,
-                                        fontSize: 2* _sizeValue,
-                                      )
+                         Flexible(
+                          child: Column(
+                            children: [
+                              SubstringHighlight(
+                                  text: widget._value ==2?'Lorem Ipsum is drived from the Latin "dolorem ipsum" roughly translated as pain itselforem'
+                                      :widget._value == 1?'लोरम इप्सम लैटिन "डोलोरेम इप्सम" से लिया गया है जिसका मोटे तौर पर अनुवाद खुद लोरेम के रूप में किया गया है'
+                                      : widget._value == 3? 'Lorem ipsum est dérivé du latin "dolorem ipsum" traduit approximativement par douleur elle-même lorem'
+                                      :null, term:widget._currentWord,
+                                  textStyle: TextStyle(color: Colors.black,
+                                    fontSize: 2* _sizeValue,
+                                  ),
+                                textStyleHighlight: TextStyle(color: Colors.red,
+                                    fontSize: 2* _sizeValue,
                                   )
-                                ]
-                            ),
+                              ),
+
+
+                            Text(widget._value ==2?' ipsum presents the sample font and orientation of writting on orem ipsum is derived from the Latin "dolorem ipsum" roughly translated as "pain itself." '
+                                :widget._value == 1?'ओप्सम नमूना फ़ॉन्ट प्रस्तुत करता है और ओरेम इप्सम पर लेखन का उन्मुखीकरण लैटिन "डारलेम इप्सम" से लिया गया है जिसका मोटे तौर पर "दर्द ही" के रूप में अनुवाद किया गया है।'
+                                : widget._value == 3? "ipsum présente l'exemple de police et l'orientation de l'écriture sur orem ipsum est dérivée du latin «dolorem ipsum», à peu près traduit par «douleur elle-même»."
+                                :null,
+                                style: TextStyle(color: Colors.black26,
+                                  fontSize: 2* _sizeValue,
+                                ))
+
+                            ],
                           ),
-                          flex: 5,),
+                        flex: 5,
+                        ),
+
+
                         new Flexible(child: Column(
                           children: [
                             Container(
