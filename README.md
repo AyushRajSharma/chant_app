@@ -5,7 +5,7 @@ This is like immersive reader app where we can read the content in our comfortab
 ## Demo
 
 <p align="center">
-  <img src="https://github.com/ayush-799/chant_app/blob/master/assets/images/ezgif.com-gif-maker.gif">
+  <img src="https://github.com/ayush-799/chant_app/blob/master/assets/images/vokoscreenNG-2020-08-23_01-17-41.gif">
 </p>
 
 ## Getting Started
