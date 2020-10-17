@@ -1,6 +1,12 @@
 # chant_app
 
-A new Flutter application.
+This is like immersive reader app where we can read the content in our comfortable language and even we can also read the content like immersive reader in our respective languages.
+
+## Demo
+
+<p align="center">
+  <img src="https://github.com/ayush-799/chant_app/blob/master/assets/images/ezgif.com-gif-maker.gif">
+</p>
 
 ## Getting Started
 
